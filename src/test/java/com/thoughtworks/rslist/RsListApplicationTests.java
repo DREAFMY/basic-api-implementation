@@ -98,4 +98,58 @@ class RsListApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void should_change_rs_event() throws Exception {
+        RsEvent rsEvent = new RsEvent("修改数据","修改数据关键字");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("第一条消息")))
+                .andExpect(jsonPath("$[0].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[1].eventName", is("修改数据")))
+                .andExpect(jsonPath("$[1].keyWord", is("修改数据关键字")))
+                .andExpect(jsonPath("$[2].eventName", is("第三条消息")))
+                .andExpect(jsonPath("$[2].keyWord", is("无关键字")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_change_rs_event_name_null() throws Exception {
+        RsEvent rsEvent = new RsEvent(null,"修改数据关键字");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("第一条消息")))
+                .andExpect(jsonPath("$[0].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[1].eventName", is("第二条消息")))
+                .andExpect(jsonPath("$[1].keyWord", is("修改数据关键字")))
+                .andExpect(jsonPath("$[2].eventName", is("第三条消息")))
+                .andExpect(jsonPath("$[2].keyWord", is("无关键字")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_change_rs_event_key_word_null() throws Exception {
+        RsEvent rsEvent = new RsEvent("修改数据",null);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("第一条消息")))
+                .andExpect(jsonPath("$[0].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[1].eventName", is("修改数据")))
+                .andExpect(jsonPath("$[1].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[2].eventName", is("第三条消息")))
+                .andExpect(jsonPath("$[2].keyWord", is("无关键字")))
+                .andExpect(status().isOk());
+    }
+
 }
