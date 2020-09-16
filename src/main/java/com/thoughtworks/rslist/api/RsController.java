@@ -3,6 +3,9 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -13,35 +16,38 @@ public class RsController {
   private List<RsEvent> rsList = initRsEventList();
 
   private List<RsEvent> initRsEventList() {
+    User user = new User("hahaha","male","123@a.com","18888888888",18);
     List<RsEvent> rsEventList = new ArrayList<>();
-    rsEventList.add(new RsEvent("第一条消息", "无关键字"));
-    rsEventList.add(new RsEvent("第二条消息", "无关键字"));
-    rsEventList.add(new RsEvent("第三条消息", "无关键字"));
+    rsEventList.add(new RsEvent("第一条消息", "无关键字",user));
+    rsEventList.add(new RsEvent("第二条消息", "无关键字",user));
+    rsEventList.add(new RsEvent("第三条消息", "无关键字",user));
     return rsEventList;
   }
 
   @GetMapping("/rs/{index}")
-  public RsEvent getOneRsEvent(@PathVariable int index) {
-    return rsList.get(index - 1);
+  public ResponseEntity getOneRsEvent(@PathVariable int index) {
+    return ResponseEntity.ok(rsList.get(index - 1));
   }
 
   @GetMapping("/rs/list")
-  public List<RsEvent> getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
     if (start == null || end == null) {
-      return rsList;
+      return ResponseEntity.ok(rsList);
     }
-    return rsList.subList(start - 1, end);
+    return ResponseEntity.ok(rsList.subList(start - 1, end));
   }
 
   @PostMapping("/rs/event")
-  public void addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
+  // @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     rsList.add(event);
+    return ResponseEntity.created(null).build();
   }
 
   @PostMapping("/rs/change/{index}")
-  public void changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
+  public ResponseEntity changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     RsEvent re = rsList.get(index - 1);
@@ -52,11 +58,13 @@ public class RsController {
       re.setKeyWord(event.getKeyWord());
     }
     rsList.set(index - 1, re);
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/rs/delete/{index}")
-  public void deleteOneRsEvent(@PathVariable int index) {
+  public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
     rsList.remove(index - 1);
+    return ResponseEntity.ok().build();
   }
 
 }
