@@ -19,12 +19,17 @@ public class User {
     private int age;
     private int voteNum = 10;
 
+
+
     public User(String name, String gender, String email, String phone, int age) {
         this.name = name;
         this.gender = gender;
         this.email = email;
         this.phone = phone;
         this.age = age;
+    }
+
+    public User() {
     }
 
     public String getName() {

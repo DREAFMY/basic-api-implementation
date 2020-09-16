@@ -10,10 +10,10 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.thoughtworks.rslist.service.UserList.userList;
+
 @RestController
 public class UserController {
-    List<User> userList = new ArrayList<>();
-
     @PostMapping("/user")
     public void addUser(@RequestBody @Valid User user) {
         userList.add(user);

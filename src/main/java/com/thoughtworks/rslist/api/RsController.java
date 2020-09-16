@@ -12,18 +12,11 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.thoughtworks.rslist.service.UserList.userList;
+import static com.thoughtworks.rslist.service.RsList.rsList;
+
 @RestController
 public class RsController {
-  private List<RsEvent> rsList = initRsEventList();
-
-  private List<RsEvent> initRsEventList() {
-    User user = new User("hahaha","male","123@a.com","18888888888",18);
-    List<RsEvent> rsEventList = new ArrayList<>();
-    rsEventList.add(new RsEvent("第一条消息", "无关键字",user));
-    rsEventList.add(new RsEvent("第二条消息", "无关键字",user));
-    rsEventList.add(new RsEvent("第三条消息", "无关键字",user));
-    return rsEventList;
-  }
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
@@ -44,7 +37,17 @@ public class RsController {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
 
+    Boolean isUserInList = false;
+    User user = event.getUser();
+    for (User u : userList) {
+      if (u.getName().equals(user.getName())) {
+        isUserInList = true;
+        break;
+      }
+    }
+    if (!isUserInList) { userList.add(user); }
     rsList.add(event);
+
     return ResponseEntity.created(null).build();
   }
 
