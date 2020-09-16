@@ -58,7 +58,7 @@ public class RsController {
       re.setKeyWord(event.getKeyWord());
     }
     rsList.set(index - 1, re);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.created(null).build();
   }
 
   @DeleteMapping("/rs/delete/{index}")
