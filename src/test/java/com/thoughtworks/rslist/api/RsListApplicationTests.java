@@ -171,4 +171,14 @@ class RsListApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test void should_return_header_index() throws Exception {
+        User user = new User("hahaha","male","123@a.com","18888888888",18);
+        RsEvent rsEvent = new RsEvent("修改数据","修改数据关键字",user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().stringValues("index","2"))
+                .andExpect(status().isCreated());
+    }
+
 }

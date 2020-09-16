@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,10 @@ public class RsController {
 
   @PostMapping("/rs/change/{index}")
   public ResponseEntity changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("index", index+"");
+
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     RsEvent re = rsList.get(index - 1);
@@ -58,7 +63,7 @@ public class RsController {
       re.setKeyWord(event.getKeyWord());
     }
     rsList.set(index - 1, re);
-    return ResponseEntity.created(null).build();
+    return ResponseEntity.created(null).headers(headers).build();
   }
 
   @DeleteMapping("/rs/delete/{index}")
