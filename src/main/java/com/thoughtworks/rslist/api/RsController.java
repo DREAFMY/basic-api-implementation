@@ -4,10 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.Error;
+import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,9 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
+    if (index < 1 || index > rsList.size()) {
+      throw new RsEventNotValidException("invalid index");
+    }
     return ResponseEntity.ok(rsList.get(index - 1));
   }
 
@@ -39,10 +46,8 @@ public class RsController {
 
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
-    rsList.add(event);
+  public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    rsList.add(rsEvent);
     return ResponseEntity.created(null).build();
   }
 
@@ -66,5 +71,6 @@ public class RsController {
     rsList.remove(index - 1);
     return ResponseEntity.ok().build();
   }
+
 
 }
