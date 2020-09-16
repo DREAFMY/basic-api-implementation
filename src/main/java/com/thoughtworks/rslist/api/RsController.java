@@ -41,6 +41,9 @@ public class RsController {
     if (start == null || end == null) {
       return ResponseEntity.ok(rsList);
     }
+    if (start < 1 || start > rsList.size() || end > rsList.size() || start > end) {
+      throw new RsEventNotValidException("invalid request param");
+    }
     return ResponseEntity.ok(rsList.subList(start - 1, end));
   }
 
@@ -52,15 +55,16 @@ public class RsController {
   }
 
   @PostMapping("/rs/change/{index}")
-  public ResponseEntity changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
-    RsEvent re = rsList.get(index - 1);
-    if (event.getEventName() != null) {
-      re.setEventName(event.getEventName());
+  public ResponseEntity changeRsEvent(@RequestBody @Valid RsEvent rsEvent, @PathVariable int index) {
+    if (index < 1 || index > rsList.size()) {
+      throw new RsEventNotValidException("invalid index");
     }
-    if (event.getKeyWord() != null) {
-      re.setKeyWord(event.getKeyWord());
+    RsEvent re = rsList.get(index - 1);
+    if (rsEvent.getEventName() != null) {
+      re.setEventName(rsEvent.getEventName());
+    }
+    if (rsEvent.getKeyWord() != null) {
+      re.setKeyWord(rsEvent.getKeyWord());
     }
     rsList.set(index - 1, re);
     return ResponseEntity.created(null).build();
@@ -68,6 +72,9 @@ public class RsController {
 
   @DeleteMapping("/rs/delete/{index}")
   public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
+    if (index < 1 || index > rsList.size()) {
+      throw new RsEventNotValidException("invalid index");
+    }
     rsList.remove(index - 1);
     return ResponseEntity.ok().build();
   }
