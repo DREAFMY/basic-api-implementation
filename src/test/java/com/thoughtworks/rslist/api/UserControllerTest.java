@@ -34,7 +34,7 @@ public class UserControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/user"))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name", is("hahaha")))
@@ -85,4 +85,21 @@ public class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @Order(6)
+    public void should_show_users() throws Exception {
+        User user = new User("hahaha","male","123@a.com","18888888888",18);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$[0].user_name", is("hahaha")))
+                .andExpect(jsonPath("$[0].user_gender", is("male")))
+                .andExpect(jsonPath("$[0].user_email", is("123@a.com")))
+                .andExpect(jsonPath("$[0].user_phone", is("18888888888")))
+                .andExpect(jsonPath("$[0].user_age", is(18)));
+    }
+
 }
