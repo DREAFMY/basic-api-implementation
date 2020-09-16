@@ -74,10 +74,13 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一条消息")))
                 .andExpect(jsonPath("$[0].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二条消息")))
                 .andExpect(jsonPath("$[1].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三条消息")))
                 .andExpect(jsonPath("$[2].keyWord", is("无关键字")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 

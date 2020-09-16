@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class RsController {
   public ResponseEntity addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
+
     rsList.add(event);
     return ResponseEntity.created(null).build();
   }
