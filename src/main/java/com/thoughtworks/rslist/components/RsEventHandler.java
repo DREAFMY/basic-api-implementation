@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class RsEventHandler {
 
-    private static final String logExceptionFormat = "Capture Exception By GlobalExceptionHandler - Detail: %s";
+    private static final String logExceptionFormat = "[System] Capture Exception - Detail: %s";
     private static Logger log = LoggerFactory.getLogger(RsEventHandler.class);
 
     @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class})
