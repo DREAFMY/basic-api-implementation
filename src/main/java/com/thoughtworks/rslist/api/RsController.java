@@ -7,7 +7,9 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.po.RsEventPO;
+import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RsController {
@@ -24,6 +27,8 @@ public class RsController {
 
   @Autowired
   RsEventRepository rsEventRepository;
+  @Autowired
+  UserRepository userRepository;
 
   private List<RsEvent> initRsEventList() {
 //    User user = new User("hahaha","male","123@a.com","18888888888",18);
@@ -53,7 +58,11 @@ public class RsController {
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-    RsEventPO rsEventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userId(rsEvent.getUserId()).build();
+    Optional<UserPO> userPO = userRepository.findById(rsEvent.getUserId());
+    if (!userPO.isPresent()) {
+      return ResponseEntity.badRequest().build();
+    }
+    RsEventPO rsEventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userPO(userPO.get()).build();
     rsEventRepository.save(rsEventPO);
     return ResponseEntity.created(null).build();
   }
