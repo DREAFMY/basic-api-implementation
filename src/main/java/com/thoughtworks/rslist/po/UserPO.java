@@ -1,31 +1,29 @@
-package com.thoughtworks.rslist.domain;
-
-import com.sun.istack.NotNull;
+package com.thoughtworks.rslist.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "user")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class User {
-    @NotNull
-    @Size(max = 8)
+public class UserPO {
+    @Id
+    @GeneratedValue
+    private int id;
     private String name;
-    @NotNull
     private String gender;
-    @Email
     private String email;
-    @Pattern(regexp = "1\\d{10}")
     private String phone;
-    @Max(100)
-    @Min(18)
     private int age;
     private int voteNum;
 }

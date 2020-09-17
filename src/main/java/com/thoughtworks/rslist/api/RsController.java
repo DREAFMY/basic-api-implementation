@@ -6,6 +6,9 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
+import com.thoughtworks.rslist.po.RsEventPO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,12 +22,15 @@ import java.util.List;
 public class RsController {
   private List<RsEvent> rsList = initRsEventList();
 
+  @Autowired
+  RsEventRepository rsEventRepository;
+
   private List<RsEvent> initRsEventList() {
-    User user = new User("hahaha","male","123@a.com","18888888888",18);
+//    User user = new User("hahaha","male","123@a.com","18888888888",18);
     List<RsEvent> rsEventList = new ArrayList<>();
-    rsEventList.add(new RsEvent("第一条消息", "无关键字",user));
-    rsEventList.add(new RsEvent("第二条消息", "无关键字",user));
-    rsEventList.add(new RsEvent("第三条消息", "无关键字",user));
+    rsEventList.add(new RsEvent("第一条消息", "无关键字",1));
+    rsEventList.add(new RsEvent("第二条消息", "无关键字",1));
+    rsEventList.add(new RsEvent("第三条消息", "无关键字",1));
     return rsEventList;
   }
 
@@ -47,7 +53,8 @@ public class RsController {
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-    rsList.add(rsEvent);
+    RsEventPO rsEventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userId(rsEvent.getUserId()).build();
+    rsEventRepository.save(rsEventPO);
     return ResponseEntity.created(null).build();
   }
 

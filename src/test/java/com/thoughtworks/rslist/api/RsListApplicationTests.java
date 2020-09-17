@@ -3,6 +3,10 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.po.RsEventPO;
+import com.thoughtworks.rslist.po.UserPO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,8 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -21,6 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RsListApplicationTests {
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     @Test
     void should_get_rs_event_list() throws Exception{
@@ -82,30 +94,29 @@ class RsListApplicationTests {
     }
 
     @Test
-    public void should_add_rs_event() throws Exception {
-        User user = new User("hahaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
+    public void should_add_rs_event_when_user_exist() throws Exception {
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+
+        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济", savedUser.getId());
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
+
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].eventName", is("第一条消息")))
-                .andExpect(jsonPath("$[0].keyWord", is("无关键字")))
-                .andExpect(jsonPath("$[1].eventName", is("第二条消息")))
-                .andExpect(jsonPath("$[1].keyWord", is("无关键字")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条消息")))
-                .andExpect(jsonPath("$[2].keyWord", is("无关键字")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord", is("经济")))
-                .andExpect(status().isOk());
+        List<RsEventPO> all = rsEventRepository.findAll();
+        all.forEach(System.out::print);
+        assertNotNull(all);
+        assertEquals(3,all.size());
+        assertEquals("猪肉涨价了",all.get(0).getEventName());
+        assertEquals("经济",all.get(0).getKeyWord());
     }
+
 
     @Test
     public void should_change_rs() throws Exception {
-        User user = new User("hahaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent("修改数据","修改数据关键字",user);
+//        User user = new User("hahaha","male","123@a.com","18888888888",18);
+        RsEvent rsEvent = new RsEvent("修改数据","修改数据关键字",1);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
@@ -123,8 +134,8 @@ class RsListApplicationTests {
 
     @Test
     public void should_change_rs_name_null() throws Exception {
-        User user = new User("hahaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent(null,"修改数据关键字",user);
+//        User user = new User("hahaha","male","123@a.com","18888888888",18);
+        RsEvent rsEvent = new RsEvent(null,"修改数据关键字",1);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
@@ -142,8 +153,8 @@ class RsListApplicationTests {
 
     @Test
     public void should_change_rs_key_word_null() throws Exception {
-        User user = new User("hahaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent("修改数据",null,user);
+//        User user = new User("hahaha","male","123@a.com","18888888888",18);
+        RsEvent rsEvent = new RsEvent("修改数据",null,1);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/change/2").content(jsonString).contentType(MediaType.APPLICATION_JSON))
@@ -180,8 +191,8 @@ class RsListApplicationTests {
 
     @Test
     public void should_throw_method_argument_not_valid_exception() throws Exception {
-        User user = new User("hahahahahahhaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
+//        User user = new User("hahahahahahhaha","male","123@a.com","18888888888",18);
+        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
