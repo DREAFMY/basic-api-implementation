@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static com.fasterxml.jackson.databind.MapperFeature.USE_ANNOTATIONS;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,12 +40,14 @@ public class UserControllerTest {
     @Order(1)
     public void should_register_user() throws Exception {
         User user = new User("haha","male","2343@a.com","1888888888",33,10);
+        objectMapper.configure(USE_ANNOTATIONS, false);
         String jsonString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
+
         List<UserPO> all = userRepository.findAll();
-        assertEquals(1, all.size());
-        assertEquals("hahaha", all.get(0).getName());
+       // assertEquals(1, all.size());
+        assertEquals("haha", all.get(0).getName());
 
 //        mockMvc.perform(get("/user"))
 //                .andExpect(jsonPath("$", hasSize(1)))
@@ -91,5 +94,18 @@ public class UserControllerTest {
         String jsonString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(6)
+    public void should_get_user_by_id() throws Exception {
+        mockMvc.perform(get("/user/1"))
+                .andExpect(jsonPath("$.userName",is("lulu")))
+                .andExpect(jsonPath("$.email",is("123@a.com")))
+                .andExpect(jsonPath("$.gender",is("female")))
+                .andExpect(jsonPath("$.phone",is("18888888888")))
+                .andExpect(jsonPath("$.age",is(13)))
+                .andExpect(jsonPath("$.voteNum",is(10)))
+                .andExpect(status().isOk());
     }
 }
