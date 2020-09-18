@@ -1,6 +1,8 @@
 package com.thoughtworks.rslist.api;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.po.VotePO;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -20,7 +23,9 @@ import java.time.LocalDateTime;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -41,13 +46,17 @@ public class VoteControllerTest {
 
     @BeforeEach
     void setUp() {
-        userPO = userRepository.save(UserPO.builder().email("adsfaf@b.com").age(45).gender("female")
-                .phone("18888888888").name("asffnn").voteNum(10).build());
-        rsEventPO = rsEventRepository.save(RsEventPO.builder().eventName("股市")
-                .keyWord("经济").userPO(userPO).voteNum(0).build());
-        votePO = VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO)
-                .localDateTime(LocalDateTime.now()).build();
-        voteRepository.save(votePO);
+        userPO = userRepository.save(UserPO.builder().email("adsfaf@b.com").age(45).gender("female").phone("18888888888").name("asffnn").voteNum(10).build());
+        rsEventPO = rsEventRepository.save(RsEventPO.builder().eventName("股市").keyWord("经济").userPO(userPO).voteNum(0).build());
+        votePO = voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO).localDateTime(LocalDateTime.now()).build());
+
+    }
+
+    @AfterEach
+    void cleanPlat() {
+        voteRepository.deleteAll();
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 
@@ -63,5 +72,13 @@ public class VoteControllerTest {
 
     }
 
+    @Test
+    public void vote_success() throws Exception {
+        Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).localDateTime(LocalDateTime.now()).build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(vote);
+        mockMvc.perform(post("/vote/{eventId}",rsEventPO.getId()).content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
 }

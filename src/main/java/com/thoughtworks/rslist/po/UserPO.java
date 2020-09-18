@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class UserPO {
     private int age;
     private int voteNum;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "userPO")
     private List<RsEventPO> rsEventPOs;
 }

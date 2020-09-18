@@ -48,43 +48,45 @@ public class RsController {
   }
 
   @GetMapping("/rs/list")
-  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+  public ResponseEntity<List<RsEventPO>> getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+    List<RsEventPO> all = rsEventRepository.findAll();
     if (start == null || end == null) {
-      return ResponseEntity.ok(rsList);
+      return ResponseEntity.ok(rsEventRepository.findAll());
     }
-    return ResponseEntity.ok(rsList.subList(start - 1, end));
+    return ResponseEntity.ok(rsEventRepository.findAll().subList(start - 1, end));
   }
 
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-    Optional<UserPO> userPO = userRepository.findById(rsEvent.getUserId());
+  public ResponseEntity addRsEvent(@RequestBody @Valid RsEventPO rsEventPO) {
+    Optional<UserPO> userPO = userRepository.findById(rsEventPO.getUserPO().getId());
     if (!userPO.isPresent()) {
       return ResponseEntity.badRequest().build();
     }
-    RsEventPO rsEventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userPO(userPO.get()).build();
     rsEventRepository.save(rsEventPO);
     return ResponseEntity.created(null).build();
   }
 
-  @PostMapping("/rs/change/{index}")
-  public ResponseEntity changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
-    RsEvent re = rsList.get(index - 1);
-    if (event.getEventName() != null) {
-      re.setEventName(event.getEventName());
+  @PatchMapping("/rs/change/{userId}")
+  public ResponseEntity changeRsEvent(@RequestBody RsEventPO rsEventPO, @PathVariable int userId) throws Exception {
+    Optional<UserPO> user = userRepository.findById(userId);
+    if (!user.isPresent()){
+      return ResponseEntity.badRequest().build();
     }
-    if (event.getKeyWord() != null) {
-      re.setKeyWord(event.getKeyWord());
+    RsEventPO temp = rsEventRepository.findById(rsEventPO.getId()).get();
+    if (rsEventPO.getEventName() != null) {
+      temp.setEventName(rsEventPO.getEventName());
     }
-    rsList.set(index - 1, re);
-    return ResponseEntity.created(null).build();
+    if (rsEventPO.getKeyWord() != null) {
+      temp.setKeyWord(rsEventPO.getKeyWord());
+    }
+    rsEventRepository.save(temp);
+    return ResponseEntity.ok().build();
   }
 
-  @DeleteMapping("/rs/delete/{index}")
-  public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
-    rsList.remove(index - 1);
+  @DeleteMapping("/rs/delete/{id}")
+  public ResponseEntity deleteOneRsEvent(@PathVariable int id) {
+    rsEventRepository.deleteById(id);
     return ResponseEntity.ok().build();
   }
 
