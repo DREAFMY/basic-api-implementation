@@ -105,7 +105,6 @@ public class UserControllerTest {
         RsEventPO rsEventPO = RsEventPO.builder().eventName("eventName").keyWord("keyWord").userPO(saveUser).build();
         rsEventRepository.save(rsEventPO);
         mockMvc.perform(delete("/user/{id}", saveUser.getId())).andExpect(status().isOk());
-
     }
 
 
