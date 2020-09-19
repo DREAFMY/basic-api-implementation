@@ -48,8 +48,6 @@ public class VoteControllerTest {
     void setUp() {
         userPO = userRepository.save(UserPO.builder().email("adsfaf@b.com").age(45).gender("female").phone("18888888888").name("asffnn").voteNum(10).build());
         rsEventPO = rsEventRepository.save(RsEventPO.builder().eventName("股市").keyWord("经济").userPO(userPO).voteNum(0).build());
-        votePO = voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO).localDateTime(LocalDateTime.now()).build());
-
     }
 
     @AfterEach
@@ -62,6 +60,7 @@ public class VoteControllerTest {
 
     @Test
     public void should_get_vote_record() throws Exception {
+        votePO = voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO).localDateTime(LocalDateTime.now()).build());
         mockMvc.perform(get("/vote")
                 .param("userId", String.valueOf(userPO.getId()))
                 .param("rsEventId", String.valueOf(rsEventPO.getId())))
@@ -73,11 +72,13 @@ public class VoteControllerTest {
     }
 
     @Test
-    public void vote_success() throws Exception {
+    public void test_mockMvc_is_ok() throws Exception {
         Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).localDateTime(LocalDateTime.now()).build();
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(vote);
-        mockMvc.perform(post("/vote/{eventId}",rsEventPO.getId()).content(jsonString).contentType(MediaType.APPLICATION_JSON))
+
+        mockMvc.perform(post("/vote/{id}",rsEventPO.getId()).content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

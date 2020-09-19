@@ -36,5 +36,11 @@ public class RsService {
                 .user(userPO.get())
                 .build();
         voteRepository.save(votePO);
+        UserPO user = userPO.get();
+        user.setVoteNum(user.getVoteNum() - vote.getVoteNum());
+        userRepository.save(user);
+        RsEventPO rsEvent = rsEventPO.get();
+        rsEvent.setVoteNum(rsEvent.getVoteNum() + vote.getVoteNum());
+        rsEventRepository.save(rsEvent);
     }
 }

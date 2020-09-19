@@ -18,6 +18,12 @@ public class VoteController {
     @Autowired
     RsService rsService;
 
+    @PostMapping("/vote/{id}")
+    public ResponseEntity vote_to_event(@PathVariable int id, @RequestBody Vote vote) {
+        System.out.println("*******************************");
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/vote")
     public ResponseEntity<List<Vote>> should_get_record(@RequestParam int userId, @RequestParam int rsEventId) {
         List<Vote> all = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId).stream().map(
@@ -28,12 +34,5 @@ public class VoteController {
         ).collect(Collectors.toList());
         return ResponseEntity.ok(all);
     }
-
-    @PostMapping("/vote/{eventId}")
-    public ResponseEntity vote_to_event(@RequestBody Vote vote, @RequestParam int eventId) {
-        rsService.vote(vote, eventId);
-        return ResponseEntity.ok().build();
-    }
-
 
 }
