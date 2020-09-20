@@ -45,7 +45,7 @@ class RsListApplicationTests {
 
     @Test
     void should_get_rs_event_list() throws Exception{
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
         RsEventPO rsEventPO1 = RsEventPO.builder().eventName("股市蹦了").keyWord("经济").userPO(savedUser).build();
         rsEventRepository.save(rsEventPO);
@@ -59,25 +59,26 @@ class RsListApplicationTests {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void should_get_one_rs_event_by_id() throws Exception{
-//        mockMvc.perform(get("/rs/1"))
-//                .andExpect(jsonPath("$.eventName", is("第一条消息")))
-//                .andExpect(jsonPath("$.keyWord", is("无关键字")))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/2"))
-//                .andExpect(jsonPath("$.eventName", is("第二条消息")))
-//                .andExpect(jsonPath("$.keyWord", is("无关键字")))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/3"))
-//                .andExpect(jsonPath("$.eventName", is("第三条消息")))
-//                .andExpect(jsonPath("$.keyWord", is("无关键字")))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void should_get_one_rs_event_by_id() throws Exception{
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
+        RsEventPO rsEventPO1 = RsEventPO.builder().eventName("股市蹦了").keyWord("经济").userPO(savedUser).build();
+        rsEventRepository.save(rsEventPO);
+        rsEventRepository.save(rsEventPO1);
+        mockMvc.perform(get("/rs/1"))
+                .andExpect(jsonPath("$.eventName", is("猪肉涨价了")))
+                .andExpect(jsonPath("$.keyWord", is("经济")))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("股市蹦了")))
+                .andExpect(jsonPath("$.keyWord", is("经济")))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void should_get_rs_event_between() throws Exception{
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
         RsEventPO rsEventPO1 = RsEventPO.builder().eventName("股市蹦了").keyWord("经济").userPO(savedUser).build();
         RsEventPO rsEventPO2 = RsEventPO.builder().eventName("开学的第一天").keyWord("学习").userPO(savedUser).build();
@@ -103,7 +104,7 @@ class RsListApplicationTests {
     @Test
     @Transactional
     public void should_add_rs_event_when_user_exist() throws Exception {
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -120,7 +121,7 @@ class RsListApplicationTests {
 
     @Test
     public void should_change_rs_when_have_use() throws Exception {
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
         rsEventRepository.save(rsEventPO);
         rsEventPO.setEventName("修改猪肉涨价了");
@@ -139,7 +140,7 @@ class RsListApplicationTests {
 
     @Test
     public void should_change_rs_name_null() throws Exception {
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
         rsEventRepository.save(rsEventPO);
         rsEventPO.setEventName(null);
@@ -158,7 +159,7 @@ class RsListApplicationTests {
 
     @Test
     public void should_delete_rs() throws Exception {
-        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(13).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
+        UserPO savedUser = userRepository.save(UserPO.builder().name("lulu").age(23).phone("18888888888").email("123@a.com").gender("female").voteNum(10).build());
         RsEventPO rsEventPO = RsEventPO.builder().eventName("猪肉涨价了").keyWord("经济").userPO(savedUser).build();
         RsEventPO rsEventPO1 = RsEventPO.builder().eventName("股市蹦了").keyWord("经济").userPO(savedUser).build();
         rsEventRepository.save(rsEventPO);

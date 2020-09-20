@@ -1,4 +1,5 @@
 package com.thoughtworks.rslist.po;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.domain.Vote;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,10 @@ public class VotePO {
     private LocalDateTime localDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "rs_event_id")
+    @JsonIgnore
     private RsEventPO rsEvent;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private UserPO user;
 }
