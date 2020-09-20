@@ -16,11 +16,10 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-    List<User> userList = new ArrayList<>();
-    @Autowired
     UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/user")
     public ResponseEntity addUser(@RequestBody @Valid User user) {

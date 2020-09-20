@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.po.VotePO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
 import com.thoughtworks.rslist.service.RsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +18,16 @@ import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
-    @Autowired
     VoteRepository voteRepository;
-    @Autowired
     RsService rsService;
 
+    public VoteController(VoteRepository voteRepository, RsService rsService) {
+        this.voteRepository = voteRepository;
+        this.rsService = rsService;
+    }
+
     @PostMapping("/vote/{id}")
-    public ResponseEntity vote_to_event(@PathVariable int id, @RequestBody Vote vote) {
+    public ResponseEntity<Void> vote_to_event(@PathVariable int id, @RequestBody Vote vote) {
         rsService.vote(vote, id);
         return ResponseEntity.ok().build();
     }
@@ -31,9 +36,9 @@ public class VoteController {
     public ResponseEntity<List<Vote>> should_get_record(@RequestParam(required = false) Integer userId, @RequestParam(required = false) Integer rsEventId, @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime) {
         List<VotePO> allPO = new ArrayList<>();
         List<Vote> all;
+        System.out.println("****************************");
         if (startTime != null && endTime != null) {
-            System.out.println("***************************");
-           // allPO = voteRepository.findAllBetweenStartTimeAndEndTime(startTime, endTime);
+            allPO = voteRepository.myLocalDateTime(startTime, endTime);
         } else {
             allPO = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId);
         }

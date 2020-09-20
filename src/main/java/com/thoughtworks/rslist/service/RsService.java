@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
 public class RsService {
     final RsEventRepository rsEventRepository;
     final UserRepository userRepository;

@@ -51,12 +51,12 @@ public class VoteControllerTest {
         rsEventPO = rsEventRepository.save(RsEventPO.builder().eventName("股市").keyWord("经济").userPO(userPO).voteNum(0).build());
     }
 
-    @AfterEach
-    void cleanPlat() {
-        voteRepository.deleteAll();
-        rsEventRepository.deleteAll();
-        userRepository.deleteAll();
-    }
+//    @AfterEach
+//    void cleanPlat() {
+//        voteRepository.deleteAll();
+//        rsEventRepository.deleteAll();
+//        userRepository.deleteAll();
+//    }
 
 
     @Test
@@ -86,15 +86,15 @@ public class VoteControllerTest {
 
     @Test
     public void should_get_vote_between_start_and_end_time() throws Exception{
-        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(1).user(userPO).localDateTime(LocalDateTime.of(2020, 8, 10, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
-        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(2).user(userPO).localDateTime(LocalDateTime.of(2020, 9, 11, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
-        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(3).user(userPO).localDateTime(LocalDateTime.of(2020, 10, 12, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(1).user(userPO).localDateTime(LocalDateTime.of(2020, 8, 10, 3, 30, 10, 000).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(2).user(userPO).localDateTime(LocalDateTime.of(2020, 9, 11, 3, 30, 10, 000).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(3).user(userPO).localDateTime(LocalDateTime.of(2020, 10, 12, 3, 30, 10, 000).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
 
         mockMvc.perform(get("/vote")
-                .param("startTime", "2020-9-11 00:00:00.000")
-                .param("endTime", "2020-9-11 23:59:59.000"))
+                .param("startTime", "2020-09-11 00:00:00.000")
+                .param("endTime", "2020-09-11 23:59:59.000"))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].localDateTime", is("2020-9-11 03:30:10.100")))
+                .andExpect(jsonPath("$[0].localDateTime", is("2020-09-11 03:30:10.000")))
                 .andExpect(jsonPath("$[0].voteNum", is(2)))
                 .andExpect(status().isOk());
     }

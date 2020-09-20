@@ -24,10 +24,13 @@ import java.util.Optional;
 @RestController
 public class RsController {
 
-  @Autowired
   RsEventRepository rsEventRepository;
-  @Autowired
   UserRepository userRepository;
+
+  public RsController( RsEventRepository rsEventRepository, UserRepository userRepository) {
+    this.rsEventRepository = rsEventRepository;
+    this.userRepository = userRepository;
+  }
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
