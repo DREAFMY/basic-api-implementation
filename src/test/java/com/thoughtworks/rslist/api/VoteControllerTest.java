@@ -51,12 +51,12 @@ public class VoteControllerTest {
         rsEventPO = rsEventRepository.save(RsEventPO.builder().eventName("股市").keyWord("经济").userPO(userPO).voteNum(0).build());
     }
 
-//    @AfterEach
-//    void cleanPlat() {
-//        voteRepository.deleteAll();
-//        rsEventRepository.deleteAll();
-//        userRepository.deleteAll();
-//    }
+    @AfterEach
+    void cleanPlat() {
+        voteRepository.deleteAll();
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
 
     @Test
