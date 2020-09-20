@@ -23,28 +23,18 @@ import java.util.Optional;
 
 @RestController
 public class RsController {
-  private List<RsEvent> rsList = initRsEventList();
 
   @Autowired
   RsEventRepository rsEventRepository;
   @Autowired
   UserRepository userRepository;
 
-  private List<RsEvent> initRsEventList() {
-//    User user = new User("hahaha","male","123@a.com","18888888888",18);
-    List<RsEvent> rsEventList = new ArrayList<>();
-    rsEventList.add(new RsEvent("第一条消息", "无关键字",1));
-    rsEventList.add(new RsEvent("第二条消息", "无关键字",1));
-    rsEventList.add(new RsEvent("第三条消息", "无关键字",1));
-    return rsEventList;
-  }
-
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
-    if (index < 1 || index > rsList.size()) {
+    if (index < 1 || index > rsEventRepository.findAll().size()) {
       throw new RsEventNotValidException("invalid index");
     }
-    return ResponseEntity.ok(rsList.get(index - 1));
+    return ResponseEntity.ok(rsEventRepository.findAll().get(index - 1));
   }
 
   @GetMapping("/rs/list")

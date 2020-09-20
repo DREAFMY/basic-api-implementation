@@ -73,7 +73,7 @@ public class VoteControllerTest {
 
     @Test
     public void test_mockMvc_is_ok() throws Exception {
-        Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).localDateTime(LocalDateTime.now()).build();
+        Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(vote);
