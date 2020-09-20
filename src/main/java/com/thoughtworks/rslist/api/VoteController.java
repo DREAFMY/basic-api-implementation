@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,16 @@ public class VoteController {
     }
 
     @GetMapping("/vote")
-    public ResponseEntity<List<Vote>> should_get_record(@RequestParam int userId, @RequestParam int rsEventId) {
-        List<Vote> all = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId).stream().map(
+    public ResponseEntity<List<Vote>> should_get_record(@RequestParam(required = false) Integer userId, @RequestParam(required = false) Integer rsEventId, @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime) {
+        List<VotePO> allPO = new ArrayList<>();
+        List<Vote> all;
+        if (startTime != null && endTime != null) {
+            System.out.println("***************************");
+           // allPO = voteRepository.findAllBetweenStartTimeAndEndTime(startTime, endTime);
+        } else {
+            allPO = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId);
+        }
+         all = allPO.stream().map(
                 item -> Vote.builder().userId(item.getUser().getId())
                         .localDateTime(item.getLocalDateTime())
                         .rsEventId(item.getRsEvent().getId())

@@ -74,13 +74,28 @@ public class VoteControllerTest {
     }
 
     @Test
-    public void test_mockMvc_is_ok() throws Exception {
+    public void should_vote_success() throws Exception {
         Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).localDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(vote);
 
         mockMvc.perform(post("/vote/{id}",rsEventPO.getId()).content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_get_vote_between_start_and_end_time() throws Exception{
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(1).user(userPO).localDateTime(LocalDateTime.of(2020, 8, 10, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(2).user(userPO).localDateTime(LocalDateTime.of(2020, 9, 11, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+        voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(3).user(userPO).localDateTime(LocalDateTime.of(2020, 10, 12, 3, 30, 10, 100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+
+        mockMvc.perform(get("/vote")
+                .param("startTime", "2020-9-11 00:00:00.000")
+                .param("endTime", "2020-9-11 23:59:59.000"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].localDateTime", is("2020-9-11 03:30:10.100")))
+                .andExpect(jsonPath("$[0].voteNum", is(2)))
                 .andExpect(status().isOk());
     }
 
