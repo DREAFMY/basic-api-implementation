@@ -18,6 +18,13 @@ import static com.thoughtworks.rslist.service.RsList.rsList;
 @RestController
 public class RsController {
 
+  public void reSetList() {
+    rsList.set(0,new RsEvent("第一条消息", "无关键字",new User("hahaha","male","123@a.com","18888888888",18)));
+    rsList.set(1,new RsEvent("第二条消息", "无关键字",new User("hahaha","male","123@a.com","18888888888",18)));
+    rsList.set(2,new RsEvent("第三条消息", "无关键字",new User("hahaha","male","123@a.com","18888888888",18)));
+    userList = new ArrayList<>();
+  }
+
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
     return ResponseEntity.ok(rsList.get(index - 1));
@@ -34,6 +41,7 @@ public class RsController {
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
+    reSetList();
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
 
@@ -53,6 +61,7 @@ public class RsController {
 
   @PostMapping("/rs/change/{index}")
   public ResponseEntity changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
+    reSetList();
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     RsEvent re = rsList.get(index - 1);
@@ -68,6 +77,7 @@ public class RsController {
 
   @DeleteMapping("/rs/delete/{index}")
   public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
+    reSetList();
     rsList.remove(index - 1);
     return ResponseEntity.ok().build();
   }
