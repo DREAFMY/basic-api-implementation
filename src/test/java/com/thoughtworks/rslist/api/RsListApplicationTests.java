@@ -7,7 +7,10 @@ import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class RsListApplicationTests {
     @Autowired
@@ -35,6 +39,7 @@ class RsListApplicationTests {
     RsEventRepository rsEventRepository;
 
     @Test
+    @Order(1)
     void should_get_rs_event_list() throws Exception{
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -51,6 +56,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(2)
     void should_get_one_rs_event() throws Exception{
         mockMvc.perform(get("/rs/1"))
                 .andExpect(jsonPath("$.eventName", is("第一条消息")))
@@ -67,6 +73,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(3)
     void should_get_rs_event_between() throws Exception{
         mockMvc.perform(get("/rs/list?start=1&end=2"))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -94,6 +101,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(10)
     public void should_add_rs_event_when_user_exist() throws Exception {
         UserPO savedUser = userRepository.save(UserPO.builder().name("lululu").age(15).phone("18888888888").email("16723@a.com").gender("female").voteNum(10).build());
 
@@ -114,6 +122,7 @@ class RsListApplicationTests {
 
 
     @Test
+    @Order(4)
     public void should_change_rs() throws Exception {
 //        User user = new User("hahaha","male","123@a.com","18888888888",18);
         RsEvent rsEvent = new RsEvent("修改数据","修改数据关键字",1);
@@ -133,6 +142,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(5)
     public void should_change_rs_name_null() throws Exception {
 //        User user = new User("hahaha","male","123@a.com","18888888888",18);
         RsEvent rsEvent = new RsEvent(null,"修改数据关键字",1);
@@ -152,6 +162,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(6)
     public void should_change_rs_key_word_null() throws Exception {
 //        User user = new User("hahaha","male","123@a.com","18888888888",18);
         RsEvent rsEvent = new RsEvent("修改数据",null,1);
@@ -171,6 +182,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(7)
     public void should_delete_rs() throws Exception {
         mockMvc.perform(delete("/rs/delete/1")).andExpect(status().isOk());
         mockMvc.perform(get("/rs/list"))
@@ -183,21 +195,11 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(8)
     public void should_throw_rs_event_not_valid_exception() throws Exception {
         mockMvc.perform(get("/rs/0"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid index")));
-    }
-
-    @Test
-    public void should_throw_method_argument_not_valid_exception() throws Exception {
-//        User user = new User("hahahahahahhaha","male","123@a.com","18888888888",18);
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid param")));
     }
 
 }
