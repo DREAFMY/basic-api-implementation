@@ -22,7 +22,7 @@ public class VotePO {
     @GeneratedValue
     private int id;
     private int voteNum;
-    private LocalDateTime localDateTime;
+    private String localDateTime;
 
     @ManyToOne
     @JsonIgnore

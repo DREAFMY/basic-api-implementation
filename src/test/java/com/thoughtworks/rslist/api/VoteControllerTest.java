@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -60,7 +61,8 @@ public class VoteControllerTest {
 
     @Test
     public void should_get_vote_record() throws Exception {
-        votePO = voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO).localDateTime(LocalDateTime.now()).build());
+        votePO = voteRepository.save(VotePO.builder().rsEvent(rsEventPO).voteNum(5).user(userPO).localDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build());
+
         mockMvc.perform(get("/vote")
                 .param("userId", String.valueOf(userPO.getId()))
                 .param("rsEventId", String.valueOf(rsEventPO.getId())))
@@ -72,8 +74,8 @@ public class VoteControllerTest {
     }
 
     @Test
-    public void should_vote_success() throws Exception {
-        Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).build();
+    public void test_mockMvc_is_ok() throws Exception {
+        Vote vote = Vote.builder().voteNum(5).rsEventId(rsEventPO.getId()).userId(userPO.getId()).localDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"))).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(vote);
