@@ -30,6 +30,7 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getOneRsEvent(@PathVariable int index) {
+    rsList = initRsEventList();
     if (index < 1 || index > rsList.size()) {
       throw new RsEventNotValidException("invalid index");
     }
@@ -50,12 +51,14 @@ public class RsController {
   @PostMapping("/rs/event")
   // @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    rsList = initRsEventList();
     rsList.add(rsEvent);
     return ResponseEntity.created(null).build();
   }
 
   @PostMapping("/rs/change/{index}")
   public ResponseEntity changeRsEvent(@RequestBody @Valid RsEvent rsEvent, @PathVariable int index) {
+    rsList = initRsEventList();
     if (index < 1 || index > rsList.size()) {
       throw new RsEventNotValidException("invalid index");
     }
@@ -72,6 +75,7 @@ public class RsController {
 
   @DeleteMapping("/rs/delete/{index}")
   public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
+    rsList = initRsEventList();
     if (index < 1 || index > rsList.size()) {
       throw new RsEventNotValidException("invalid index");
     }
