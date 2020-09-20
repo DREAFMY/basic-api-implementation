@@ -32,8 +32,7 @@ public class VoteController {
         List<VotePO> allPO = new ArrayList<>();
         List<Vote> all;
         if (startTime != null && endTime != null) {
-            System.out.println("***************************");
-           // allPO = voteRepository.findAllBetweenStartTimeAndEndTime(startTime, endTime);
+            allPO = voteRepository.myLocalDateTime(startTime, endTime);
         } else {
             allPO = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId);
         }

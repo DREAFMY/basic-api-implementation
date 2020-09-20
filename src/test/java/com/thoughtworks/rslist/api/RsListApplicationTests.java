@@ -180,15 +180,4 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.error",is("invalid index")));
     }
 
-//    @Test
-//    public void should_throw_method_argument_not_valid_exception() throws Exception {
-////        User user = new User("hahahahahahhaha","male","123@a.com","18888888888",18);
-//        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String jsonString = objectMapper.writeValueAsString(rsEvent);
-//        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.error",is("invalid param")));
-//    }
-
 }

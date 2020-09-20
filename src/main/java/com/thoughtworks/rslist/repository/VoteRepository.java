@@ -12,6 +12,6 @@ public interface VoteRepository extends PagingAndSortingRepository<VotePO, Integ
     List<VotePO> findAll();
     List<VotePO> findAllByUserIdAndRsEventId(int userId, int rsEventId);
 
-    @Query("select v from vote v where v.localDateTime >= :startTime and v.localDateTime <= :endTime")
+    @Query("select v from VotePO v where v.localDateTime >= :startTime and v.localDateTime <= :endTime")
     List<VotePO> myLocalDateTime(String startTime, String endTime);
 }
