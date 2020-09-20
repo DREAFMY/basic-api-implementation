@@ -15,5 +15,5 @@ public class Vote {
     private int voteNum;
     private int userId;
     private int rsEventId;
-    private LocalDateTime localDateTime;
+    private String localDateTime;
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,6 @@ public class VoteController {
 
     @PostMapping("/vote/{id}")
     public ResponseEntity vote_to_event(@PathVariable int id, @RequestBody Vote vote) {
-        vote.setLocalDateTime(LocalDateTime.now());
         rsService.vote(vote, id);
         return ResponseEntity.ok().build();
     }
