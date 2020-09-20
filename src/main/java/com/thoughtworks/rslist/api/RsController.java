@@ -22,6 +22,7 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public RsEvent getOneRsEvent(@PathVariable int index) {
+    rsList = initRsEventList();
     return rsList.get(index - 1);
   }
 
@@ -35,6 +36,7 @@ public class RsController {
 
   @PostMapping("/rs/event")
   public void addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
+    rsList = initRsEventList();
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     rsList.add(event);
@@ -42,6 +44,7 @@ public class RsController {
 
   @PostMapping("/rs/change/{index}")
   public void changeRsEvent(@RequestBody String rsEvent, @PathVariable int index) throws JsonProcessingException {
+    rsList = initRsEventList();
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent, RsEvent.class);
     RsEvent re = rsList.get(index - 1);
@@ -56,6 +59,7 @@ public class RsController {
 
   @DeleteMapping("/rs/delete/{index}")
   public void deleteOneRsEvent(@PathVariable int index) {
+    rsList = initRsEventList();
     rsList.remove(index - 1);
   }
 
