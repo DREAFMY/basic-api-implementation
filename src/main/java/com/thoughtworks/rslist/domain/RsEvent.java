@@ -8,12 +8,12 @@ public class RsEvent {
     private String keyWord;
     private User user;
 
-//    @JsonIgnore
+    @JsonIgnore
     public User getUser() {
         return user;
     }
 
-//    @JsonProperty
+    @JsonProperty
     public void setUser(User user) {
         this.user = user;
     }

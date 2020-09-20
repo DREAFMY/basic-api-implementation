@@ -36,13 +36,12 @@ public class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/user"))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is("hahaha")))
-                .andExpect(jsonPath("$[0].gender", is("male")))
-                .andExpect(jsonPath("$[0].email", is("123@a.com")))
-                .andExpect(jsonPath("$[0].phone", is("18888888888")))
-                .andExpect(jsonPath("$[0].age", is(18)))
-                .andExpect(jsonPath("$[0].voteNum", is(10)))
+                .andExpect(jsonPath("$[0].user_name", is("hahaha")))
+                .andExpect(jsonPath("$[0].user_gender", is("male")))
+                .andExpect(jsonPath("$[0].user_email", is("123@a.com")))
+                .andExpect(jsonPath("$[0].user_phone", is("18888888888")))
+                .andExpect(jsonPath("$[0].user_age", is(18)))
+                .andExpect(jsonPath("$[0].user_voteNum", is(10)))
                 .andExpect(status().isOk());
     }
 
