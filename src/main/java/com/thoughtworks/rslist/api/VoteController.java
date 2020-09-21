@@ -2,16 +2,11 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.po.VotePO;
-import com.thoughtworks.rslist.repository.RsEventRepository;
-import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
 import com.thoughtworks.rslist.service.RsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +31,6 @@ public class VoteController {
     public ResponseEntity<List<Vote>> should_get_record(@RequestParam(required = false) Integer userId, @RequestParam(required = false) Integer rsEventId, @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime) {
         List<VotePO> allPO = new ArrayList<>();
         List<Vote> all;
-        System.out.println("****************************");
         if (startTime != null && endTime != null) {
             allPO = voteRepository.myLocalDateTime(startTime, endTime);
         } else {

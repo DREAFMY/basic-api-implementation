@@ -2,15 +2,11 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.po.UserPO;
-import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,12 +38,18 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity delete_user_and_rsEvent(@PathVariable int id) {
+        if (!userRepository.findById(id).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity get_user_by_id(@PathVariable int id) {
+        if (!userRepository.findById(id).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
         Optional<UserPO> user = userRepository.findById(id);
         return ResponseEntity.ok(user.get());
     }
